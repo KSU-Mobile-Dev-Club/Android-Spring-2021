@@ -1,5 +1,6 @@
 package edu.ksu.cs.mdc.androidspring2021
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -14,9 +15,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        // Sets up a listener for click events on this button
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            // When clicked, executes this section of code
+            // Creates an intent (Android's way of communicating between and within apps)
+            val sendIntent: Intent = Intent().apply {
+                // Send action tells the system that this information should be sent to someone
+                // Apps declare compatibility with different actions in their Manifest
+                action = Intent.ACTION_SEND
+                // Include the text you want to share here
+                putExtra(Intent.EXTRA_TEXT, "Example Text")
+                putExtra(Intent.EXTRA_TITLE, "Example Title Text")
+                // The MIME type of the content to share
+                type = "text/plain"
+            }
+
+            // Create another intent to pull up a chooser
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            // Start the intent you want to start
+            startActivity(shareIntent)
+
+            // Snackbar from previous example
+            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //        .setAction("Action", null).show()
         }
     }
 
@@ -31,7 +52,11 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
